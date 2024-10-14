@@ -3,7 +3,7 @@ require("dotenv").config();
 const config = require("./config.json");
 const mongoose = require("mongoose");
 
-mongoose.connect(config.connectionString);
+mongoose.connect(config.connectionString).then(() => console.log('MongoDB connected')).catch(err => console.log('MongoDB connection error:', err));
 
 const User = require("./models/user.model");
 const Note = require("./models/note.model");
@@ -19,7 +19,9 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://notes-application-2.onrender.com",
+    method:["GET","POST","PUT","DELETE"], 
+    credentials:true,
   })
 );
 
