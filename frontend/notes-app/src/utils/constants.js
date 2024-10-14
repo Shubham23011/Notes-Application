@@ -1,1 +1,1 @@
-export const BASE_URL = "https://notes-application-mic7.onrender.com"
+export const BASE_URL = "http://localhost:8000"
