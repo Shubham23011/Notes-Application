@@ -1,5 +1,4 @@
 require("dotenv").config();
-
 const config = require("./config.json");
 const mongoose = require("mongoose");
 
@@ -17,11 +16,12 @@ const { authenticateToken } = require("./utilities");
 
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+// CORS configuration
+app.use(cors({
+  origin: "https://rainbow-starburst-f0d394.netlify.app", // Allow your Netlify frontend
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Specify allowed methods
+  credentials: true, // Allow credentials if needed
+}));
 
 app.get("/", (req, res) => {
   res.json({ data: "Hello Shubham" });
@@ -74,7 +74,7 @@ app.post("/create-account", async (req, res) => {
     error: false,
     user,
     accessToken,
-    message: "Registeration Successful",
+    message: "Registration Successful",
   });
 });
 
@@ -94,7 +94,7 @@ app.post("/login", async (req, res) => {
     return res.status(400).json({ message: "User not found" });
   }
 
-  if (userInfo.email == email && userInfo.password == password) {
+  if (userInfo.email === email && userInfo.password === password) {
     const user = { user: userInfo };
     const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "36000m",
@@ -225,7 +225,7 @@ app.get("/get-all-notes", authenticateToken, async (req, res) => {
     return res.json({
       error: false,
       notes,
-      message: "All notes retreived successfully",
+      message: "All notes retrieved successfully",
     });
   } catch (error) {
     return res.status(500).json({
@@ -313,6 +313,7 @@ app.get("/search-notes/", authenticateToken, async (req, res) => {
         { content: { $regex: new RegExp(query, "i") } },
       ],
     });
+
     return res.json({
       error: false,
       notes: matchingNotes,
@@ -326,6 +327,8 @@ app.get("/search-notes/", authenticateToken, async (req, res) => {
   }
 });
 
-app.listen(8000);
-
-module.exports = app;
+// Start the server
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
