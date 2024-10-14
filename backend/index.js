@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 8000; // Use environment variable for port
 app.use(express.json());
 
 // Define allowed origins
-const allowedOrigins = ['http://localhost:5173', 'https://notes-application-0xpz.onrender.com','https://notes-application-1-arba.onrender.com'];
+const allowedOrigins = ['http://localhost:5173', 'https://notes-application-0xpz.onrender.com','https://notes-application-2.onrender.com'];
 
 // CORS configuration
 app.use(cors({
