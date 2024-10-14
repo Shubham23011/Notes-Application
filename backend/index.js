@@ -32,7 +32,7 @@ app.use(express.json());
 // app.options('*', cors()); // Enable preflight requests for all routes
 
 app.use(cors({
-        origin: "https://slug-panel.onrender.com"
+        origin: "https://notes-application-2.onrender.com"
     }
 ))
 app.options('*', cors())
