@@ -12,7 +12,24 @@ const app = express();
 const PORT = process.env.PORT || 8000; // Use environment variable for port
 
 app.use(express.json());
-app.use(cors({ origin: "*" }));
+
+// Define allowed origins
+const allowedOrigins = ['http://localhost:5173', 'https://notes-application-0xpz.onrender.com'];
+
+// CORS configuration
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
+
+app.options('*', cors()); // Enable preflight requests for all routes
 
 // Connect to MongoDB with error handling
 mongoose.connect(config.connectionString)
@@ -273,9 +290,7 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
-// Start the server
+// Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-module.exports = app;
