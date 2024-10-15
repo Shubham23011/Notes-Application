@@ -1,9 +1,12 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
+dotenv.config();
 
 const config = require("./config.json");
 const mongoose = require("mongoose");
 
-mongoose.connect(config.connectionString).then(() => console.log('MongoDB connected')).catch(err => console.log('MongoDB connection error:', err));
+mongoose.connect(config.connectionString)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log('MongoDB connection error:', err));
 
 const User = require("./models/user.model");
 const Note = require("./models/note.model");
@@ -17,13 +20,25 @@ const { authenticateToken } = require("./utilities");
 
 app.use(express.json());
 
+// CORS configuration
+const allowedOrigins = [
+  'https://rainbow-kelpie-1ec452.netlify.app',
+  'https://legendary-capybara-a0c644.netlify.app/login',
+  'http://localhost:5173'
+];
+
+// Apply CORS middleware
 app.use(
   cors({
-    origin: "https://notes-application-2.onrender.com",
-    method:["GET","POST","PUT","DELETE"], 
-    credentials:true,
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// Enable pre-flight across-the-board
+app.options("*", cors());
 
 app.get("/", (req, res) => {
   res.json({ data: "Hello Shubham" });
@@ -328,6 +343,14 @@ app.get("/search-notes/", authenticateToken, async (req, res) => {
   }
 });
 
-app.listen(8000);
+
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, '../frontend/notes-app/dist', 'index.html'));
+// })
+
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 module.exports = app;
