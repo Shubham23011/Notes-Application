@@ -25,7 +25,8 @@ const allowedOrigins = [
   'https://rainbow-kelpie-1ec452.netlify.app',
   'https://legendary-capybara-a0c644.netlify.app/login',
   'http://localhost:5173',
-  'https://notes-application-orcin.vercel.app/login'
+  'https://notes-application-orcin.vercel.app/login',
+  'https://notes-manager-frontend.onrender.com/login'
 ];
 
 // Apply CORS middleware
