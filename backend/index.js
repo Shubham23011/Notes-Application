@@ -6,7 +6,10 @@ const mongoose = require("mongoose");
 
 mongoose.connect(config.connectionString)
   .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log('MongoDB connection error:', err));
+  .catch(err => {
+    console.log('MongoDB connection error:', err)
+    process.exit(1)
+  });
 
 const User = require("./models/user.model");
 const Note = require("./models/note.model");
@@ -22,22 +25,23 @@ app.use(express.json());
 
 // CORS configuration
 const allowedOrigins = [
-  'https://rainbow-kelpie-1ec452.netlify.app',
-  'https://legendary-capybara-a0c644.netlify.app/login',
   'http://localhost:5173',
-  'https://notes-application-orcin.vercel.app/login',
-  'https://notes-manager-frontend.onrender.com/login'
+  'https://notes-manager-application.netlify.app/login'
 ];
 
 // Apply CORS middleware
-app.use(
-  cors({
-    origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors({
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true); // Allow the origin
+    } else {
+      callback(new Error('Not allowed by CORS')); // Block the origin
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 // Enable pre-flight across-the-board
 app.options("*", cors());
